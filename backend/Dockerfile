@@ -13,7 +13,7 @@ RUN npm install --omit=dev
 COPY . .
 
 # Exponer el puerto en el que corre la aplicación
-EXPOSE 3000
+EXPOSE 5000
 
 # Comando para ejecutar la aplicación
 CMD ["node", "index.js"]
