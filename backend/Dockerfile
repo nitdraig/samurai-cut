@@ -1,18 +1,35 @@
-FROM node:18
+# Etapa de construcción
+FROM node:18-alpine AS builder
+
+# Directorio de trabajo
+WORKDIR /app
+
+# Copiamos package.json y package-lock.json (si existe)
+COPY package*.json ./
+
+# Instalamos dependencias
+RUN npm install
+
+# Copiamos el resto del código
+COPY . .
+
+# Compilamos el proyecto (asegúrate de tener configurado "build": "tsc" en package.json)
+RUN npm run build
+
+# Etapa de producción
+FROM node:18-alpine
 
 WORKDIR /app
 
-# Copiar package.json y cualquier archivo de lock si existe
-COPY package.json ./
-COPY package-lock.json ./
-COPY yarn.lock ./
+# Copiamos únicamente las dependencias de producción
+COPY package*.json ./
+RUN npm install --only=production
 
-# Instalar dependencias (detecta si usar npm o yarn)
-RUN if [ -f yarn.lock ]; then yarn install --production; elif [ -f package-lock.json ]; then npm install --omit=dev; else echo "No lockfile found!"; fi
+# Copiamos el código compilado desde la etapa builder
+COPY --from=builder /app/dist ./dist
 
-# Copiar el resto del código
-COPY . .
-
+# Exponemos el puerto (ajústalo si es necesario)
 EXPOSE 5000
 
-CMD ["node", "index.js"]
+# Comando de inicio
+CMD ["node", "dist/index.js"]
