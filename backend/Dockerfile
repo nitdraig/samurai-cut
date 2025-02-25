@@ -1,19 +1,15 @@
 FROM node:18
 
-# Establecer el directorio de trabajo dentro del contenedor
 WORKDIR /app
 
-# Copiar package.json y package-lock.json para instalar dependencias primero
-COPY package*.json yarn.lock ./
+# Copiar archivos de dependencias si existen
+COPY package.json package-lock.json yarn.lock* ./
 
 # Instalar dependencias
-RUN yarn install --production
+RUN if [ -f yarn.lock ]; then yarn install --production; else npm install --omit=dev; fi
 
-# Copiar el resto del código de la aplicación
 COPY . .
 
-# Exponer el puerto en el que corre la aplicación
 EXPOSE 5000
 
-# Comando para ejecutar la aplicación
 CMD ["node", "index.js"]
