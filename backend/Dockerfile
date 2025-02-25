@@ -1,27 +1,17 @@
-# Etapa de construcción
-FROM node:18-alpine AS builder
+FROM node:18
 
-# Directorio de trabajo
 WORKDIR /app
 
-# Copiamos package.json y package-lock.json (si existe)
-COPY package*.json ./
+# Copiar package.json y package-lock.json si existen
+COPY package.json ./
+COPY package-lock.json ./
 
-# Instalamos dependencias
-RUN npm install
+# Instalar dependencias
+RUN npm install --omit=dev
 
-# Copiamos el resto del código
+# Copiar el resto del código de la aplicación
 COPY . .
 
-# Compilamos el proyecto (asegúrate de tener configurado "build": "tsc" en package.json)
-RUN npm run build
-
-
-# Copiamos el código compilado desde la etapa builder
-COPY --from=builder /app/dist ./dist
-
-# Exponemos el puerto (ajústalo si es necesario)
 EXPOSE 5000
 
-# Comando de inicio
-CMD ["node", "dist/index.js"]
+CMD ["node", "index.js"]
