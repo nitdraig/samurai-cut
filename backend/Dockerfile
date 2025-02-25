@@ -4,10 +4,10 @@ FROM node:18
 WORKDIR /app
 
 # Copiar package.json y package-lock.json para instalar dependencias primero
-COPY package*.json ./
+COPY package*.json yarn.lock ./
 
 # Instalar dependencias
-RUN npm install 
+RUN yarn install --production
 
 # Copiar el resto del código de la aplicación
 COPY . .
