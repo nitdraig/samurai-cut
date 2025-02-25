@@ -1,35 +1,19 @@
-# Etapa de construcción
-FROM node:18-alpine AS builder
+FROM node:18
 
-# Directorio de trabajo
+# Establecer el directorio de trabajo dentro del contenedor
 WORKDIR /app
 
-# Copiamos package.json y package-lock.json (si existe)
+# Copiar package.json y package-lock.json para instalar dependencias primero
 COPY package*.json ./
 
-# Instalamos dependencias
-RUN npm install
+# Instalar dependencias
+RUN npm install --omit=dev
 
-# Copiamos el resto del código
+# Copiar el resto del código de la aplicación
 COPY . .
 
-# Compilamos el proyecto (asegúrate de tener configurado "build": "tsc" en package.json)
-RUN npm run build
-
-# Etapa de producción
-FROM node:18-alpine
-
-WORKDIR /app
-
-# Copiamos únicamente las dependencias de producción
-COPY package*.json ./
-RUN npm install --only=production
-
-# Copiamos el código compilado desde la etapa builder
-COPY --from=builder /app/dist ./dist
-
-# Exponemos el puerto (ajústalo si es necesario)
+# Exponer el puerto en el que corre la aplicación
 EXPOSE 3000
 
-# Comando de inicio
-CMD ["node", "dist/index.js"]
+# Comando para ejecutar la aplicación
+CMD ["node", "index.js"]
