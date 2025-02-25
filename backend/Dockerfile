@@ -7,7 +7,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Instalar dependencias
-RUN npm install --omit=dev
+RUN npm install 
 
 # Copiar el resto del código de la aplicación
 COPY . .
