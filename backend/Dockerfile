@@ -22,3 +22,6 @@ COPY --from=builder /app/dist ./dist
 
 # Exponemos el puerto (ajústalo si es necesario)
 EXPOSE 5000
+
+# Comando de inicio
+CMD ["node", "dist/index.js"]
