@@ -19,7 +19,7 @@ RUN npm run build
 # Etapa de producción
 FROM node:18-alpine
 
-WORKDIR /app
+WORKDIR /
 
 # Copiamos únicamente las dependencias de producción
 COPY package*.json ./
